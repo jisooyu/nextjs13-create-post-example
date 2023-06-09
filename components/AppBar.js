@@ -28,13 +28,15 @@ const AppBar = () => {
       {session?.user ? (
           <div className="flex gap-3 md:gap-5 text-sky-600 hover:text-sky-700">
               <Link href='/create-prompt' className='blue_btn'>Create Prompt</Link>
-              <button type="button" onClick={signOut} className="text-sky-600 hover:text-sky-700" >
+              <button type="button" onClick={()=>signOut()} className="text-sky-600 hover:text-sky-700" >
                 Sign out
               </button>
           </div>
           ): (
         <>
-            {providers && <p className='text-sky-600 hover:text-sky-700' onClick={signIn}>Sign In</p>}
+              {providers &&
+                <p className='text-sky-600 hover:text-sky-700' onClick={()=>signIn()}>Sign In</p>
+              }
           </>
         )}
         </div>
