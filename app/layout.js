@@ -8,8 +8,13 @@ export default function RootLayout({ children } ) {
     <html lang="en">
       <body>
         <Provider>
-          <AppBar />
-          <div className={"h-screen "}>{children}</div>
+          <div className='main'>
+            <div className='gradient' />
+          </div>
+          <main className='app'>
+            <AppBar />
+            {children}
+          </main>
         </Provider>
       </body>
     </html>

@@ -1,35 +1,44 @@
 'use client'
+import {useState, useEffect} from 'react'
 import Link from "next/link";
-import { useSession, signIn, signOut } from 'next-auth/react'
-import MenuItems from "./MenuItems";
+import { useSession, signIn, signOut, getProviders } from 'next-auth/react'
 
 const AppBar = () => {
-      const { data: session } = useSession();
+    const { data: session } = useSession();
+    const [providers, setProviders] = useState(null);
 
-  const handleSignin = (e) => {
-    e.preventDefault()
-    signIn()
-  }
-
-  const handleSignout = (e) => {
-    e.preventDefault()
-    signOut()
-  }
-
+    useEffect(() => {
+        const setUpProviders = async () => {
+          const response = await getProviders()
+          console.log("response from AppBar", response)
+            setProviders(response)
+        }
+        setUpProviders()
+    }, []);
   return (
-    <div className="bg-gradient-to-b from-cyan-50 to-cyan-200 p-2 flex gap-2">
-            <Link className="text-sky-600 hover:text-sky-700" href={"/"}>
-                Home
-            </Link>
-            <Link className="text-sky-600 hover:text-sky-700" href={"/admin/panel"}>
-                Panel
-          </Link>
-        {session && <Link href="#" onClick={handleSignout} className="text-sky-600 hover:text-sky-700" >Sign out</Link>  }
-      {!session && <Link href="#" onClick={handleSignin} className="text-sky-600 hover:text-sky-700" >Sign in</Link>}
-            <div className="text-sky-600 hover:text-sky-700">
-              <MenuItems  />
-            </div>
-    </div>
+    <nav className="flex-between w-full mb-16 pt-3">
+      <Link className="flex gap-2 flex-center text-sky-600 hover:text-sky-700" href="/">
+        Home
+      </Link>
+      <Link className="text-sky-600 hover:text-sky-700" href="/admin/panel">
+        Panel
+      </Link>
+    {/* Desktop Navigation */}
+      <div  className='sm:flex hidden'>
+      {session?.user ? (
+          <div className="flex gap-3 md:gap-5 text-sky-600 hover:text-sky-700">
+              <Link href='/create-prompt' className='blue_btn'>Create Prompt</Link>
+              <button type="button" onClick={signOut} className="text-sky-600 hover:text-sky-700" >
+                Sign out
+              </button>
+          </div>
+          ): (
+        <>
+            {providers && <p className='text-sky-600 hover:text-sky-700' onClick={signIn}>Sign In</p>}
+          </>
+        )}
+        </div>
+    </nav>
   )
 }
 
