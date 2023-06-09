@@ -20,14 +20,13 @@ const handler = NextAuth({
             const sessionUser = await User.findOne({
                 email: session.user.email
             }); 
-            session.user.id = sessionUser._id.toString();
+            session.user.id = await sessionUser._id.toString();
             return session;
         },
         async signIn({ profile }) {
             try {
                 // every nextjs function is serverless. that means it is Lambda function  that is executed only when it is called-> dynamodb
                 await connectToDB();
-        
                 // check if a user already exists
                 const userExists = await User.findOne({
                     email: profile.email
