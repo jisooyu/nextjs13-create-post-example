@@ -34,7 +34,7 @@ const AppBar = () => {
           </div>
           ): (
         <>
-          {providers &&
+          {providers && 
             <p className='text-sky-600 hover:text-sky-700' onClick={()=>signIn()}>Sign In</p>
           }
           </>

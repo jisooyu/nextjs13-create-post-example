@@ -16,14 +16,7 @@ const handler = NextAuth({
         }),
     ],
     callbacks: {
-        async session({ session }) {
-            const sessionUser = await User.findOne({
-                email: session.user.email
-            }); 
-            session.user.id = await sessionUser._id.toString();
-            return session;
-        },
-        async signIn({ profile }) {
+         async signIn({ profile }) {
             try {
                 // every nextjs function is serverless. that means it is Lambda function  that is executed only when it is called-> dynamodb
                 await connectToDB();
@@ -44,7 +37,15 @@ const handler = NextAuth({
                 console.log(error);
                 return false;
             }
-        }
+        },
+        async session({ session }) {
+            console.log("session from auth/route", session)
+            const sessionUser = await User.findOne({
+                email: session.user.email
+            }); 
+            session.user.id = await sessionUser._id.toString();
+            return session;
+        },
     }
 })
 
