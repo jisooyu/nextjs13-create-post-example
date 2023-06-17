@@ -1,47 +1,68 @@
-'use client'
-import {useState, useEffect} from 'react'
-import Link from "next/link";
-import { useSession, signIn, signOut, getProviders } from 'next-auth/react'
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const AppBar = () => {
-    const { data: session } = useSession();
-    const [providers, setProviders] = useState(null);
+	const { data: session } = useSession();
 
-    useEffect(() => {
-        const setUpProviders = async () => {
-          const response = await getProviders()
-          console.log("response from AppBar", response)
-            setProviders(response)
-        }
-        setUpProviders()
-    }, []);
-  return (
-    <nav className="flex-between w-full mb-16 pt-3">
-      <Link className="flex gap-2 flex-center text-sky-600 hover:text-sky-700" href="/">
-        Home
-      </Link>
-      <Link className="text-sky-600 hover:text-sky-700" href="/admin/panel">
-        Panel
-      </Link>
-    {/* Desktop Navigation */}
-      <div  className='sm:flex hidden'>
-      {session?.user ? (
-          <div className="flex gap-3 md:gap-5 text-sky-600 hover:text-sky-700">
-              <Link href='/create-prompt' className='blue_btn'>Create Prompt</Link>
-              <button type="button" onClick={()=>signOut()} className="text-sky-600 hover:text-sky-700" >
-                Sign out
-              </button>
-          </div>
-          ): (
-        <>
-          {providers && 
-            <p className='text-sky-600 hover:text-sky-700' onClick={()=>signIn()}>Sign In</p>
-          }
-          </>
-        )}
-        </div>
-    </nav>
-  )
-}
+	return (
+		<div className='nav_header'>
+			<div className='flex gap-2 flex-col sm:flex-row'>
+				<Link
+					className='text-slate-100 hover:text-sky-400'
+					href='/'
+				>
+					Home
+				</Link>
+				<Link
+					className='text-slate-100 hover:text-sky-400'
+					href='/admin'
+				>
+					Admin
+				</Link>
+			</div>
+			<>
+				{session ? (
+					<div className='flex'>
+						<div className='flex gap-3'>
+							<Link
+								href='/create-prompt'
+								className='blue_btn'
+							>
+								Create Prompt
+							</Link>
+							<Image
+								src={session.user.image}
+								alt='userimage'
+								width={40}
+								height={40}
+								className='rounded-full object-contain hidden sm:block'
+							/>
+							<button
+								type='button'
+								onClick={() => signOut({ callbackUrl: '/' })}
+								className='text-slate-100 hover:text-sky-400'
+							>
+								Sign out
+							</button>
+						</div>
+					</div>
+				) : (
+					<>
+						{
+							<p
+								className='text-slate-100 hover:text-sky-400'
+								onClick={() => signIn({ callbackUrl: '/' })}
+							>
+								Sign In
+							</p>
+						}
+					</>
+				)}
+			</>
+		</div>
+	);
+};
 
-export default AppBar
+export default AppBar;
